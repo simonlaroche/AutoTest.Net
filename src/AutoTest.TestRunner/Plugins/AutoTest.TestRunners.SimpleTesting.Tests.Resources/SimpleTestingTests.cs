@@ -12,6 +12,21 @@ namespace AutoTest.TestRunners.SimpleTesting.Tests.Resources
         }
     }
 
+	public class SimpleTestingFieldTests
+	{
+		public Specification a_field_test = new QuerySpecification<Foo, int>
+		{
+			On = () => new Foo(),
+			When = x => x.Bar(),
+			Expect =
+                               {
+                                   q => q == 12
+                               }
+		};
+
+		public int a_non_field_test;
+	}
+
     public class SimpleTestingTests
     {
         public Specification a_passing_test()

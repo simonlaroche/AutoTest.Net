@@ -71,6 +71,12 @@ namespace AutoTest.TestRunners.Shared.AssemblyAnalysis
             return _locator.LocateMethod(type);
         }
 
+		public SimpleField LocateField(string type)
+		{
+			return _locator.LocateField(type);
+		}
+
+
         public void Dispose()
         {
             _locator = null;
@@ -89,6 +95,8 @@ namespace AutoTest.TestRunners.Shared.AssemblyAnalysis
         string GetParentType(string type);
         SimpleClass LocateClass(string type);
         SimpleMethod LocateMethod(string type);
+		SimpleField LocateField(string type);
+
     }
 
     public class SystemReflectionProvider_Internal : MarshalByRefObject, ISystemReflectionProvider_Internal
@@ -209,6 +217,18 @@ namespace AutoTest.TestRunners.Shared.AssemblyAnalysis
             return null;
         }
 
+		public SimpleField LocateField(string type)
+		{
+			var field = locate(type);
+			if (field == null)
+				return null;
+			if (field.GetType() == typeof(SimpleField))
+				return (SimpleField)field;
+			return null;
+		}
+
+
+		
         private SimpleType locate(string type)
         {
             foreach (var module in _assembly.GetModules())
@@ -232,6 +252,9 @@ namespace AutoTest.TestRunners.Shared.AssemblyAnalysis
                 result = locateSimpleMethod(type.GetMethods(), typeName, type.FullName);
                 if (result != null)
                     return result;
+            	result = locateSimpleField(type.GetFields(), typeName, type.FullName);
+				if (result != null)
+					return result;
             }
             return null;
         }
@@ -294,5 +317,16 @@ namespace AutoTest.TestRunners.Shared.AssemblyAnalysis
             }
             return null;
         }
+
+		private SimpleType locateSimpleField(FieldInfo[] fields, string typeName, string typeFullname)
+		{
+			foreach (var fieldInfo in fields)
+			{
+				var fullName = typeFullname + "." + fieldInfo.Name;
+				if (fullName.Equals(typeName))
+					return new SimpleField(fullName, getAttributes(fieldInfo.GetCustomAttributes(true)).ToList(), fieldInfo.FieldType.FullName);
+			}
+			return null;
+		}
     }
 }

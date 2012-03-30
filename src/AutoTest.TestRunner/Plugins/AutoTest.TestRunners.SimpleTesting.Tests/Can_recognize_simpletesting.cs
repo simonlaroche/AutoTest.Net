@@ -34,12 +34,34 @@ namespace AutoTest.TestRunners.SimpleTesting.Tests
         }
 
         [Test]
-        public void When_passed_a_class_containing_simpletesting_test_fields_it_will_report_that_it_can_handle_it()
+        public void When_passed_a_class_containing_simpletesting_test_methodss_it_will_report_that_it_can_handle_it()
         {
             var runner = new Runner();
             Assert.That(runner.ContainsTestsFor(getAssembly(), "AutoTest.TestRunners.SimpleTesting.Tests.Resources.SimpleTestingTests"), Is.True);
         }
 
+		[Test]
+		public void When_passed_a_class_containing_simpletesting_test_fields_it_will_report_that_it_can_handle_it()
+		{
+			var runner = new Runner();
+			Assert.That(runner.ContainsTestsFor(getAssembly(), "AutoTest.TestRunners.SimpleTesting.Tests.Resources.SimpleTestingFieldTests"), Is.True);
+		}
+
+		[Test]
+		public void When_passed_a_test_field_it_will_report_that_it_can_handle_it()
+		{
+			var runner = new Runner();
+			Assert.That(runner.ContainsTestsFor(getAssembly(), "AutoTest.TestRunners.SimpleTesting.Tests.Resources.SimpleTestingFieldTests.a_field_test"), Is.True);
+		}
+
+		[Test]
+		public void When_passed_a_non_test_field_it_will_report_that_it_can_handle_it()
+		{
+			var runner = new Runner();
+			Assert.That(runner.ContainsTestsFor(getAssembly(), "AutoTest.TestRunners.SimpleTesting.Tests.Resources.SimpleTestingFieldTests.a_non_field_test"), Is.True);
+		}
+
+		
         [Test]
         public void Will_respond_to_simpletesting_identifier()
         {

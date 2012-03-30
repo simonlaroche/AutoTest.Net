@@ -15,5 +15,7 @@ namespace AutoTest.TestRunners.Shared.AssemblyAnalysis
         string GetParentType(string type);
         SimpleClass LocateClass(string type);
         SimpleMethod LocateMethod(string type);
+		SimpleField LocateField(string type);
+
     }
 }

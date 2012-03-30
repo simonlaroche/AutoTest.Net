@@ -51,7 +51,14 @@ namespace AutoTest.TestRunners.SimpleTesting
                 var fixture = locator.LocateClass(locator.GetParentType(member));
                 if (fixture == null)
                     return false;
-                return isTest(fixture, spec);
+                if (isTest(fixture, spec)) return true;
+
+				var field = locator.LocateField(member);
+				if (field == null)
+					return false;
+				return isTest(fixture, field);
+
+
             }
         }
 
@@ -80,6 +87,15 @@ namespace AutoTest.TestRunners.SimpleTesting
             var enumerableFound = method.ReturnType.StartsWith("IEnumerable<Simple.Testing.ClientFramework.Specification>");
             return !fixture.IsAbstract && (specFound || enumerableFound);
         }
+
+
+		private bool isTest(SimpleClass fixture, SimpleField method)
+		{
+			var specFound = method.FieldType.StartsWith("Simple.Testing.ClientFramework.Specification");
+			var enumerableFound = method.FieldType.StartsWith("IEnumerable<Simple.Testing.ClientFramework.Specification>");
+			return !fixture.IsAbstract && (specFound || enumerableFound);
+		}
+
 
         public bool Handles(string identifier)
         {

@@ -100,7 +100,17 @@ namespace AutoTest.Core.ReflectionProviders
             return null;
         }
 
-        public void Dispose()
+    	public SimpleField LocateField(string type)
+    	{
+			var field = locate(type);
+			if (field == null)
+				return null;
+			if (field.GetType() == typeof(SimpleField))
+				return (SimpleField)field;
+			return null;
+    	}
+
+    	public void Dispose()
         {
             if (_assembly != null)
                 _assembly.Dispose();
@@ -129,6 +139,10 @@ namespace AutoTest.Core.ReflectionProviders
                 result = locateSimpleMethod(type.Methods, typeName, type.QualifiedName());
                 if (result != null)
                     return result;
+				result = locateSimpleField(type.Fields, typeName, type.QualifiedName());
+				if (result != null)
+					return result;
+
             }
             return null;
         }
@@ -192,6 +206,18 @@ namespace AutoTest.Core.ReflectionProviders
             }
             return null;
         }
+
+		private SimpleType locateSimpleField(IEnumerable<FieldDefinition> fields, string typeName, string typeFullname)
+		{
+			foreach (var field in fields)
+			{
+				var retType = field.FieldType;
+				var fullName = typeFullname + "." + field.Name;
+				if (fullName.Equals(typeName))
+					return new SimpleField(fullName, getAttributes(field.CustomAttributes), field.FieldType.FullName);
+			}
+			return null;
+		}
     }
 
     public static class TypeReferenceExtensions
